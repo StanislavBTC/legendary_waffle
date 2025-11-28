@@ -1,20 +1,36 @@
 #второй файл в CORE
 
-import subprocess
-from typing import TextIO, cast
+import os
+import asyncio
+import time
 
-proc = subprocess.Popen(
-    ["python3", ""],
-    stdin=subprocess.PIPE,
-    stdout=subprocess.PIPE,
-    text=True
-)
+read_fd, write_fd = os.pipe()
 
-stdin = cast(TextIO, proc.stdin)
-stdout = cast(TextIO,proc.stdout )
+async def sender():
+    os.close(read_fd)  # Закрываем дескриптор чтения
+    while True:
+        # Пример данных для отправки
+        msg = "1, 2\n" # Например, загрузка и выгрузка
+        os.write(write_fd, msg.encode())
+        print("Отправлено:", msg.strip())
+        await asyncio.sleep(1)  
 
-stdin.write("analyze traffic\n")
-stdout.flush()
+def on_data_available():
+    raw = os.read(read_fd, 1024)
+    if raw:
+        for line in raw.split(b"\n"):
+            if line:
+                print("Получено:", line.decode().strip())
 
-response = stdout.readline()
-print(response)
+async def receiver():
+    os.close(write_fd)
+    loop = asyncio.get_running_loop()
+    loop.add_reader(read_fd, on_data_available)
+    while True:
+        await asyncio.sleep(1)
+
+async def main():
+    await asyncio.gather(sender(), receiver())
+
+if __name__ == "__main__":
+    asyncio.run(main())
