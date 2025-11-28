@@ -4,7 +4,7 @@ import subprocess
 from typing import TextIO, cast
 
 proc = subprocess.Popen(
-    ["python3", "child_script.py"],
+    ["python3", ""],
     stdin=subprocess.PIPE,
     stdout=subprocess.PIPE,
     text=True
