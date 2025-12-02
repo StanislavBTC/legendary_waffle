@@ -25,5 +25,6 @@ for interface in interfaces:
         # Обработка ошибок, например, если интерфейс не существует
         print(f"Не удалось получить информацию для интерфейса {interface}")
 
-
+https://codeby.net/threads/polucheniye-bazovykh-parametrov-setevykh-interfeisov-po-umolchaniyu-dlya-ispol-zovaniya-v-proyektakh-python.80824/ 
+полезная штука
 '''
